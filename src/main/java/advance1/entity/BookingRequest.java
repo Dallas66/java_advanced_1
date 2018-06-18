@@ -1,4 +1,4 @@
-package entity;
+package advance1.entity;
 
 import java.time.LocalDate;
 
