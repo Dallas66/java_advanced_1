@@ -1,8 +1,13 @@
 package advance1.threads;
 
 import advance1.customToolse.CustomQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ThreadReader extends Thread {
+
+    private Logger logger;
+
 
     private CustomQueue customQueue;
 
@@ -15,13 +20,6 @@ public class ThreadReader extends Thread {
         while (!isInterrupted()) {
             if (customQueue.getHotelCounterGet().intValue() < 15) {
                 customQueue.get();
-                System.out.println(Thread.currentThread().getName() + " received ");
-                try {
-                    sleep(5000);
-                    System.out.println(Thread.currentThread().getName() + " processed");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             } else interrupt();
         }
     }

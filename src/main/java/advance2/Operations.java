@@ -9,19 +9,22 @@ public class Operations {
         Account account2 = new Account(2000L,2);
         Account account3 = new Account(2000L,15);
 
+        Transfer transfer = new Transfer(account3, account2, 500L);
+        Transfer transfer1 = new Transfer(account2, account3, 300L);
+
         System.out.println(account.getBalance());
         System.out.println(account2.getBalance());
         System.out.println(account3.getBalance());
         new Thread(() -> {
             try {
-                transfer(account3, account2, 500L);
+                transfer.transfer();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
-
+        Thread.sleep(1);
         try {
-            transfer(account2, account3, 300L);
+            transfer1.transfer();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -30,37 +33,4 @@ public class Operations {
         System.out.println(account3.getBalance());
     }
 
-
-    static void transfer(Account from, Account to, Long amount) throws InterruptedException {
-        if (from.getBalance() < amount)
-            throw new IllegalArgumentException("Insufficient founds");
-        if (qwemore(from,to).getReentrantLock().tryLock(1,TimeUnit.SECONDS)){
-            System.out.println(qwemore(from,to));
-            try {
-                if(qwe(from,to).getReentrantLock().tryLock(1,TimeUnit.SECONDS)){
-                    System.out.println(qwe(from,to));
-                    try {
-                        from.withdraw(amount);
-                        to.deposit(amount);
-                    }finally {
-                        to.getReentrantLock().unlock();
-                    }
-                }
-            }finally {
-                from.getReentrantLock().unlock();
-            }
-        }
-//        synchronized (from) {
-//            synchronized (to) {
-//                from.withdraw(amount);
-//                to.deposit(amount);
-//            }
-//        }
-    }
-    public static Account qwemore(Account account , Account account2){
-        return account.getId() < account2.getId() ? account : account2;
-    }
-    public static Account qwe(Account account , Account account2){
-        return account.getId() < account2.getId() ? account2 : account;
-    }
 }

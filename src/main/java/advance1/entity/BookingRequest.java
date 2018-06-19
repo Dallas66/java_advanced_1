@@ -28,4 +28,11 @@ public class BookingRequest {
     public void setHotel(Hotel hotel) {
         this.hotel = hotel;
     }
+
+    @Override
+    public String toString() {
+        return "BookingRequest{" +
+                "hotel=" + hotel +
+                '}';
+    }
 }
