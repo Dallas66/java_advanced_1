@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ThreadReader extends Thread {
 
-    private Logger logger;
+    private Logger logger = LoggerFactory.getLogger(ThreadReader.class);
 
 
     private CustomQueue customQueue;
@@ -17,10 +17,14 @@ public class ThreadReader extends Thread {
 
     @Override
     public void run() {
-        while (!isInterrupted()) {
-            if (customQueue.getHotelCounterGet().intValue() < 15) {
-                customQueue.get();
-            } else interrupt();
+        while (customQueue.getHotelCounterGet().intValue() < 15) {
+            customQueue.get();
+            logger.info("Processed request" + "\n");
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

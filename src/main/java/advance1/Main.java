@@ -4,34 +4,31 @@ import advance1.customToolse.CustomQueue;
 import advance1.threads.ThreadReader;
 import advance1.threads.ThreadWriter;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 public class Main {
 
     public static void main(String[] args) {
 
         CustomQueue customQueue = new CustomQueue();
 
+        ExecutorService executorWriter = Executors.newCachedThreadPool();
+        ExecutorService executorReader = Executors.newCachedThreadPool();
 
-        ThreadWriter threadWriter = new ThreadWriter(customQueue);
-        ThreadWriter threadWriter1 = new ThreadWriter(customQueue);
-        ThreadWriter threadWriter2 = new ThreadWriter(customQueue);
+        for (int i = 0; i < 3; i++) {
+            executorWriter.execute(new ThreadWriter(customQueue));
+        }
+        for (int i = 0; i < 6; i++) {
+            executorReader.execute(new ThreadReader(customQueue));
+        }
 
-        ThreadReader threadReader = new ThreadReader(customQueue);
-        ThreadReader threadReader1 = new ThreadReader(customQueue);
-        ThreadReader threadReader2 = new ThreadReader(customQueue);
-        ThreadReader threadReader3 = new ThreadReader(customQueue);
-        ThreadReader threadReader4 = new ThreadReader(customQueue);
-        ThreadReader threadReader5 = new ThreadReader(customQueue);
+        executorWriter.shutdown();
+        executorReader.shutdown();
 
-        threadWriter.start();
-        threadWriter1.start();
-        threadWriter2.start();
 
-        threadReader.start();
-        threadReader1.start();
-        threadReader2.start();
-        threadReader3.start();
-        threadReader4.start();
-        threadReader5.start();
     }
 }
 

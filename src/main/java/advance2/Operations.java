@@ -1,36 +1,33 @@
 package advance2;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Operations {
+public class Operations extends Thread {
 
-    public static void main(String[] args) throws InterruptedException {
-        Account account = new Account(1000L,1);
-        Account account2 = new Account(2000L,2);
-        Account account3 = new Account(2000L,15);
+    private final CopyOnWriteArrayList<Account> list;
+    private Random random = new Random();
+    private AtomicInteger atomicInteger = new AtomicInteger(0);
 
-        Transfer transfer = new Transfer(account3, account2, 500L);
-        Transfer transfer1 = new Transfer(account2, account3, 300L);
 
-        System.out.println(account.getBalance());
-        System.out.println(account2.getBalance());
-        System.out.println(account3.getBalance());
-        new Thread(() -> {
-            try {
-                transfer.transfer();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        Thread.sleep(1);
-        try {
-            transfer1.transfer();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+    public Operations(CopyOnWriteArrayList<Account> list) {
+        this.list = list;
+    }
+
+
+    @Override
+    public void run() {
+        while (Transfer.getAtomicInteger().intValue() < 1000) {
+                try {
+                    new Transfer().transfer(list.get(random.nextInt(list.size())),
+                            list.get(random.nextInt(list.size())),
+                            random.nextInt(100)+50,1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
         }
-        System.out.println(account.getBalance());
-        System.out.println(account2.getBalance());
-        System.out.println(account3.getBalance());
     }
 
 }

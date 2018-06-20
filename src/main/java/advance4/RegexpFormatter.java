@@ -14,10 +14,9 @@ public class RegexpFormatter {
         while (matcher.find()) {
             String mobilePhone = matcher.group();
             String correctMobilePhone = mobilePhone.replaceAll("\\W", "");
-            normalStr = normalStr.replace(mobilePhone,correctMobilePhone);
+            normalStr = normalStr.replace(mobilePhone, correctMobilePhone);
             System.out.println(correctMobilePhone);
         }
-//        System.out.println(normalStr);
     }
 }
 

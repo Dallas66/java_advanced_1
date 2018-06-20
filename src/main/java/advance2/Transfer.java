@@ -1,75 +1,72 @@
 package advance2;
 
+
+import advance1.threads.ThreadReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 
-public class Transfer extends Thread {
-    private  Account from;
-    private  Account to;
-    private Long amount;
+public class Transfer {
 
-    public Transfer(Account from, Account to, Long amount) {
-        this.from = from;
-        this.to = to;
-        this.amount = amount;
-    }
+    private static LongAdder SUCCESTRANSACTION = new LongAdder();
+    private static AtomicInteger atomicInteger = new AtomicInteger(0);
+    private Logger logger = LoggerFactory.getLogger(Transfer.class);
 
-    @Override
-    public void run() {
 
-    }
+    public void transfer(Account from, Account to, long amount, int transactionCounter) throws InterruptedException {
 
-     void transfer() throws InterruptedException {
-        if (from.getBalance() < amount)
-            throw new IllegalArgumentException("Insufficient founds");
-        if (qwemore(from, to).getReentrantLock().tryLock(1, TimeUnit.SECONDS)) {
-            System.out.println(qwemore(from, to));
-            try {
-                if (qwe(from, to).getReentrantLock().tryLock(1, TimeUnit.SECONDS)) {
-                    System.out.println(qwe(from, to));
-                    try {
+        if (from.equals(to)) {
+            return;
+        }
+        if (from.getBalance() < amount){
+            return;
+        }
+        Account acc1 = more(from, to);
+        Account acc2 = less(from, to);
+
+        if (acc1.getReentrantLock().tryLock(50, TimeUnit.MILLISECONDS)) {
+            if (acc2.getReentrantLock().tryLock(50, TimeUnit.MILLISECONDS)) {
+                try {
+                    if (getAtomicInteger().intValue() < transactionCounter) {
+                        atomicInteger.incrementAndGet();
+                        System.out.println(amount + " amount");
                         from.withdraw(amount);
+                        System.out.println(from.getId() + " from");
                         to.deposit(amount);
-                    } finally {
-                        to.getReentrantLock().unlock();
+                        System.out.println(to.getId() + " get");
+                        System.out.println(getAtomicInteger() + " successTransfers");
                     }
+                    return;
+                } finally {
+                    acc1.getReentrantLock().unlock();
+                    acc2.getReentrantLock().unlock();
                 }
-            } finally {
-                from.getReentrantLock().unlock();
+
             }
         }
-
     }
 
-    public static Account qwemore(Account account, Account account2) {
+    public Account more(Account account, Account account2) {
         return account.getId() < account2.getId() ? account : account2;
     }
 
-    public static Account qwe(Account account, Account account2) {
+    public Account less(Account account, Account account2) {
         return account.getId() < account2.getId() ? account2 : account;
     }
 
-    public Account getFrom() {
-        return from;
+    public static LongAdder getSUCCESSTRANSACTION() {
+        return SUCCESTRANSACTION;
     }
 
-    public void setFrom(Account from) {
-        this.from = from;
+
+    public void incrementSuccessTransfer() {
+        SUCCESTRANSACTION.increment();
     }
 
-    public Account getTo() {
-        return to;
+    public static AtomicInteger getAtomicInteger() {
+        return atomicInteger;
     }
-
-    public void setTo(Account to) {
-        this.to = to;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
 }

@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface Secured {
 
     String stringAnn() default "strict";
+
     int intAnn();
 }

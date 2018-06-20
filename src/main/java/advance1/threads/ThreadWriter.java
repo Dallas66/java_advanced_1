@@ -17,11 +17,9 @@ public class ThreadWriter extends Thread {
 
     @Override
     public void run() {
-        while (!isInterrupted()) {
-            if (customQueue.getHotelCounterAdd().intValue() < 15) {
-                BookingRequest request = new BookingRequest(LocalDate.now(), new Hotel(random.nextInt(20), "Hotel", 3));
-                customQueue.add(request);
-            } else interrupt();
+        while (customQueue.getHotelCounterAdd().intValue() < 15) {
+            BookingRequest request = new BookingRequest(LocalDate.now(), new Hotel(random.nextInt(20), "Hotel", 3));
+            customQueue.add(request);
         }
     }
 }

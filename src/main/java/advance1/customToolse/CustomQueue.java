@@ -22,52 +22,49 @@ public class CustomQueue {
     }
 
     public void add(BookingRequest bookingRequest) {
-        logger.info("Synchronized queue");
         synchronized (this) {
-            logger.info("Checking operations counter");
-            if (hotelCounterAdd.incrementAndGet() <= 15) {
-                try {
-                    while (list.size() == 5) {
-                        logger.info("Queue is full, waiting");
-                        wait();
-                    }
-                    list.add(bookingRequest);
-                    logger.info(Thread.currentThread().getName() + " sent request " + list.getLast() + " " + getHotelCounterAdd().toString() + "\n");
-                    logger.info(Thread.currentThread().getName() + " Queue state after sent " + list);
-                } catch (InterruptedException e) {
-                    logger.error("InterruptedException " + e.getMessage());
-                } finally {
-                    this.notifyAll();
+            logger.info("Synchronized queue" + "\n");
+            try {
+                while (list.size() == 5) {
+                    logger.info("Queue is full, waiting" + "\n");
+                    wait();
                 }
-            } else {
-                return;
+                if (hotelCounterAdd.intValue() < 15) {
+                    hotelCounterAdd.incrementAndGet();
+                    list.add(bookingRequest);
+                    logger.info("Checking add counter " + hotelCounterAdd);
+                    logger.info("Sent request " + list.getLast() + " " + getHotelCounterAdd().toString());
+                    logger.info("Queue state after sent " + list.size() + "\n");
+                } else return;
+            } catch (InterruptedException e) {
+                logger.error("InterruptedException " + e.getMessage());
+            } finally {
+                this.notifyAll();
             }
         }
     }
 
     public void get() {
-        logger.info("Synchronized queue");
         synchronized (this) {
-            logger.info("Checking operations counter");
-            if (hotelCounterGet.incrementAndGet() <= 15) {
+            logger.info("Synchronized queue" + "\n");
+
+            if (hotelCounterGet.intValue() < 15) {
                 try {
                     while (list.isEmpty()) {
-                        logger.info("Queue is empty, waiting");
+                        logger.info("Queue is empty, waiting" + "\n");
                         wait();
                     }
-                    logger.info(Thread.currentThread().getName() + " received request " + list.getFirst() + "\n");
+                    hotelCounterGet.incrementAndGet();
+                    logger.info("Checking get counter " + hotelCounterGet);
+                    logger.info("Received request " + list.getFirst());
                     list.removeFirst();
-                    logger.info(Thread.currentThread().getName() + " Queue state after recived " + list);
-                    Thread.sleep(5000);
-                    logger.info(Thread.currentThread().getName() + " processed request" + "\n");
+                    logger.info("Queue state after recived " + list.size() + "\n");
                 } catch (InterruptedException e) {
                     logger.error("InterruptedException " + e.getMessage());
                 } finally {
                     this.notifyAll();
                 }
-            } else {
-                return;
-            }
+            } else return;
         }
     }
 

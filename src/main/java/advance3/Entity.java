@@ -9,7 +9,7 @@ public class Entity {
     public void method2() {
     }
 
-    @Secured(intAnn = 6,stringAnn = "annotation")
+    @Secured(intAnn = 6, stringAnn = "annotation")
     public void method3() {
     }
 
