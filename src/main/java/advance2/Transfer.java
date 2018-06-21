@@ -21,28 +21,30 @@ public class Transfer {
         if (from.equals(to)) {
             return;
         }
-        if (from.getBalance() < amount){
+        if (from.getBalance() < amount) {
+            logger.info("Insufficient funds");
             return;
         }
         Account acc1 = more(from, to);
         Account acc2 = less(from, to);
 
+        logger.info("Try to lock account " + " id" + acc1.getId());
         if (acc1.getReentrantLock().tryLock(50, TimeUnit.MILLISECONDS)) {
+            logger.info("Try to lock account " + " id" + acc2.getId() + "\n");
             if (acc2.getReentrantLock().tryLock(50, TimeUnit.MILLISECONDS)) {
                 try {
                     if (getAtomicInteger().intValue() < transactionCounter) {
                         atomicInteger.incrementAndGet();
-                        System.out.println(amount + " amount");
+                        logger.info("Both accounts are locked " + " id" + acc1.getId() + " " + " id" + acc2.getId());
                         from.withdraw(amount);
-                        System.out.println(from.getId() + " from");
                         to.deposit(amount);
-                        System.out.println(to.getId() + " get");
-                        System.out.println(getAtomicInteger() + " successTransfers");
+                        logger.info("Transfer success" + "\n");
                     }
                     return;
                 } finally {
                     acc1.getReentrantLock().unlock();
                     acc2.getReentrantLock().unlock();
+                    logger.info("Both accounts are unlocked" + " id" + acc1.getId() + " " + " id" + acc2.getId() + "\n");
                 }
 
             }

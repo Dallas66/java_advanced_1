@@ -1,14 +1,15 @@
 package advance2;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PojoReadAndWriter {
 
+    private Logger logger = LoggerFactory.getLogger(PojoReadAndWriter.class);
     File folder = new File("./src/main/resources/files");
-
     private File[] fileMassive;
 
     public void writer(Account account) {
@@ -17,13 +18,10 @@ public class PojoReadAndWriter {
             try (ObjectOutputStream oos =
                          new ObjectOutputStream(new FileOutputStream(file))) {
                 oos.writeObject(account);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("WoW wOw we caught a bug " + e + " possibly file not found");
             }
         }
-
     }
 
 
@@ -31,7 +29,6 @@ public class PojoReadAndWriter {
         CopyOnWriteArrayList<Account> accounts = new CopyOnWriteArrayList<>();
         fileMassive = folder.listFiles();
         for (File file : fileMassive) {
-//            System.out.println(file.getName() + " filereader");
             try (ObjectInputStream ois
                          = new ObjectInputStream(new FileInputStream(file))) {
 
@@ -39,10 +36,11 @@ public class PojoReadAndWriter {
                 accounts.add(account);
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.error("WoW wOw we caught a bug " + ex + " possibly file not found");
             }
 
         }
+        logger.info("View all files" + "\n");
         return accounts;
     }
 }

@@ -32,7 +32,6 @@ public class CustomQueue {
                 if (hotelCounterAdd.intValue() < 15) {
                     hotelCounterAdd.incrementAndGet();
                     list.add(bookingRequest);
-                    logger.info("Checking add counter " + hotelCounterAdd);
                     logger.info("Sent request " + list.getLast() + " " + getHotelCounterAdd().toString());
                     logger.info("Queue state after sent " + list.size() + "\n");
                 } else return;
@@ -55,8 +54,8 @@ public class CustomQueue {
                         wait();
                     }
                     hotelCounterGet.incrementAndGet();
-                    logger.info("Checking get counter " + hotelCounterGet);
-                    logger.info("Received request " + list.getFirst());
+
+                    logger.info("Received request " + list.getFirst() + " " + getHotelCounterGet().toString());
                     list.removeFirst();
                     logger.info("Queue state after recived " + list.size() + "\n");
                 } catch (InterruptedException e) {
