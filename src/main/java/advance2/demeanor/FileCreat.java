@@ -1,12 +1,11 @@
-package advance2;
+package advance2.demeanor;
 
+import advance2.entity.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class FileCreat {
 

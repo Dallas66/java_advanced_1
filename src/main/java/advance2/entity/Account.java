@@ -1,4 +1,4 @@
-package advance2;
+package advance2.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
